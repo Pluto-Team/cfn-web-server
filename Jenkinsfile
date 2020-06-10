@@ -16,7 +16,7 @@ pipeline {
             steps {
                 catchError {
                     sh 'chmod +x push-to-s3.ps1'
-                    sh 'pwsh push-to-s3.ps1'
+                    sh "pwsh push-to-s3.ps1 ${env.BRANCH_NAME}"
                 }
             }
 

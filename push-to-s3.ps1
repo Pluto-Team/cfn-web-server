@@ -3,7 +3,7 @@
 Import-Module -Name AWS.Tools.S3
 $branch = $args[ 0 ]
 
-try {
+
     Write-Host "######## CHECKING FOR ERRORS IN YAML FILES ########"
     $listOfYamlFilesToLint = (Get-ChildItem -Filter "*.yaml").Name
 
@@ -29,7 +29,3 @@ try {
         aws s3 cp $fileName s3://server-standup-files-pluto-app/web-server/$branch/
     }
     rm -f output.txt
-}
-catch {
-    Write-Host "Error found!"
-}
