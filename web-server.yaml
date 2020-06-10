@@ -1,0 +1,95 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Candidate Tracker Web Server
+
+Parameters:
+  DeployAppVersion:
+    Description: Deploy either a Dev, Test, or master branch of Candidate Tracker
+    Type: String
+    Default: Dev
+    AllowedValues:
+      - Dev
+      - Test
+      - Prod
+  LoadBalancer:
+    Description: References balancer to connect to
+    Type: String
+  SecurityGroup:
+    Description: References the Security Group that will be associated with the server based on the branch
+    Type: String
+  WebServerName:
+    Description: References the name of the web Server on the EC2 Management Console
+    Type: String
+
+Mappings:
+  DeployServerBasedOnAppVersion:
+    Dev:
+      LoadBalancer: dev-pluto-app-elb
+      SecurityGroup: DevWebServerSecurityGroup
+      WebServerName: Candidate-Tracker-Dev-Branch-Server
+    Test:
+      LoadBalancer: test-pluto-app-elb
+      SecurityGroup: sg-005be7743d1bb8224
+      WebServerName: Candidate-Tracker-Test-Branch-Server
+    Prod:
+      LoadBalancer: prod-pluto-app-elb
+      SecurityGroup: sg-0d187d129bdcc11c2
+      WebServerName: Candidate-Tracker-Prod-Branch-Server
+
+Resources:
+    WebServer:
+      Type: AWS::EC2::Instance
+      Properties:
+        KeyName: Pluto-Key-Pair
+        ImageId: ami-04a0ee204b44cc91a
+        InstanceType: t2.micro 
+        Monitoring: false
+        SecurityGroups:
+            - !FindInMap [ DeployServerBasedOnAppVersion, !Ref DeployAppVersion , SecurityGroup ]
+        UserData: !Base64 |
+          <powershell>
+              Set-ExecutionPolicy Bypass -Scope Process -Force
+              Write-Host "####### STARTING SERVER DEPLOYMENT ########"
+          </powershell>
+        Tags:
+          - Key: Name
+            Value: Candidate-tracker-{DeployAppVersion}-Web-Server
+
+    DevWebServerSecurityGroup:
+      Type: AWS::EC2::SecurityGroup
+      Properties:
+        GroupName: Dev Web Server Security Group
+        GroupDescription: Dev Web Server Security Group 
+        VpcId: vpc-0aa01e70
+        SecurityGroupIngress:
+          - IpProtocol: tcp
+            FromPort: 80
+            ToPort: 80
+            CidrIp: 96.255.23.246/32
+          - IpProtocol: tcp
+            FromPort: 80
+            ToPort: 80
+            SourceSecurityGroupOwnerId: sg-0aa4f959b742daa71
+          - IpProtocol: tcp
+            FromPort: 3389
+            ToPort: 3389
+            CidrIp: 96.255.23.246/32
+    
+    TestWebServerSecurityGroup:
+      Type: AWS::EC2::SecurityGroup
+      Properties:
+        GroupName: Test Web Server Security Group
+        GroupDescription: Test Web Server Security Group 
+        VpcId: vpc-0aa01e70
+        SecurityGroupIngress:
+          - IpProtocol: tcp
+            FromPort: 80
+            ToPort: 80
+            CidrIp: 96.255.23.246/32
+          - IpProtocol: tcp
+            FromPort: 80
+            ToPort: 80
+            SourceSecurityGroupOwnerId: sg-069ec97032d78160f
+          - IpProtocol: tcp
+            FromPort: 3389
+            ToPort: 3389
+            CidrIp: 96.255.23.246/32
