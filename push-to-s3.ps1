@@ -1,5 +1,5 @@
 # perform linting of the yaml files
-Install-Module -Name AWS.Tools.S3 -Verbose
+Install-Module -Name AWS.Tools.S3 -Verbose -Force
 Import-Module -Name AWS.Tools.S3
 $branch = $args[ 0 ]
 
