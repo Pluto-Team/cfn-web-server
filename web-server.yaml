@@ -43,7 +43,7 @@ Resources:
         ImageId: ami-04a0ee204b44cc91a
         InstanceType: t2.micro 
         Monitoring: false
-        SecurityGroups:
+        SecurityGroupIds:
             - !FindInMap [ DeployServerBasedOnAppVersion, !Ref DeployAppVersion , SecurityGroup ]
         UserData: !Base64 |
           <powershell>
