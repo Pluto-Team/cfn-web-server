@@ -35,6 +35,10 @@ Mappings:
       SecurityGroupMap: sg-0d187d129bdcc11c2
       WebServerName: Candidate-Tracker-Prod-Branch-Server
 
+Conditions:
+  DevWebServerSecurityGroupSelected: !Equals [ !Ref DeployAppVersion, Dev ]
+  TestWebServerSecurityGroupSelected: !Equals [ !Ref DeployAppVersion, Test ]
+
 Resources:
     WebServer:
       Type: AWS::EC2::Instance
@@ -46,7 +50,7 @@ Resources:
         Monitoring: false
         IamInstanceProfile: EC2_S3FullAccess
         SecurityGroups:
-          -  !Ref DevWebServerSecurityGroup
+          - !If [ DevWebServerSecurityGroupSelected, !Ref DevWebServerSecurityGroup, !If [TestWebServerSecurityGroupSelected, !Ref TestWebServerSecurityGroup, !Ref DevWebServerSecurityGroup]  ]
         UserData: !Base64 |
           <powershell>
               Set-ExecutionPolicy Bypass -Scope Process -Force
