@@ -65,7 +65,6 @@ Resources:
       Properties:
         GroupName: Dev Web Server Security Group
         GroupDescription: Dev Web Server Security Group 
-        VpcId: vpc-0aa01e70
         SecurityGroupIngress:
           - IpProtocol: tcp
             FromPort: 80
@@ -74,7 +73,7 @@ Resources:
           - IpProtocol: tcp
             FromPort: 80
             ToPort: 80
-            SourceSecurityGroupOwnerId: sg-0aa4f959b742daa71
+            SourceSecurityGroupName: dev-pluto-app-elb-SG
           - IpProtocol: tcp
             FromPort: 3389
             ToPort: 3389
@@ -85,7 +84,6 @@ Resources:
       Properties:
         GroupName: Test Web Server Security Group
         GroupDescription: Test Web Server Security Group 
-        VpcId: vpc-0aa01e70
         SecurityGroupIngress:
           - IpProtocol: tcp
             FromPort: 80
@@ -94,7 +92,7 @@ Resources:
           - IpProtocol: tcp
             FromPort: 80
             ToPort: 80
-            SourceSecurityGroupOwnerId: sg-069ec97032d78160f
+            SourceSecurityGroupName: test-pluto-app-elb-SG
           - IpProtocol: tcp
             FromPort: 3389
             ToPort: 3389
