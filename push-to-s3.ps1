@@ -11,7 +11,7 @@ $branch = $args[ 0 ]
         $fileName = $_
         Write-Host "Checking file --> " $fileName
 
-        cfn-lint -t $fileName > output.txt
+        python3 -m cfn-lint -t $fileName > output.txt
         
         Write-Host "##### CONTENTS AFTER LINTING #####"
         Get-Content output.txt | ForEach-Object {
