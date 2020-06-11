@@ -24,15 +24,15 @@ Mappings:
   DeployServerBasedOnAppVersion:
     Dev:
       LoadBalancer: dev-pluto-app-elb
-      SecurityGroup: DevWebServerSecurityGroup
+      SecurityGroupMap: DevWebServerSecurityGroup
       WebServerName: Candidate-Tracker-Dev-Branch-Server
     Test:
       LoadBalancer: test-pluto-app-elb
-      SecurityGroup: sg-005be7743d1bb8224
+      SecurityGroupMap: sg-005be7743d1bb8224
       WebServerName: Candidate-Tracker-Test-Branch-Server
     Prod:
       LoadBalancer: prod-pluto-app-elb
-      SecurityGroup: sg-0d187d129bdcc11c2
+      SecurityGroupMap: sg-0d187d129bdcc11c2
       WebServerName: Candidate-Tracker-Prod-Branch-Server
 
 Resources:
@@ -46,7 +46,7 @@ Resources:
         Monitoring: false
         IamInstanceProfile: EC2_S3FullAccess
         SecurityGroups:
-          - !FindInMap [DeployServerBasedOnAppVersion, !Ref DeployAppVersion, SecurityGroup]
+          - !FindInMap [DeployServerBasedOnAppVersion, !Ref DeployAppVersion, SecurityGroupMap]
         UserData: !Base64 |
           <powershell>
               Set-ExecutionPolicy Bypass -Scope Process -Force
