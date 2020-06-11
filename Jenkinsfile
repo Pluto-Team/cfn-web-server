@@ -12,6 +12,12 @@ pipeline {
             }
         }
 
+        stage ("Import python modules") {
+            steps{
+                sh 'pip install cfn-lint --user'
+            }
+        }
+
         stage( "Lint and push template to S3" ) {
             steps {
                 catchError {
