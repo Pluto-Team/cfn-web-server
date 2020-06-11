@@ -12,11 +12,11 @@ pipeline {
             }
         }
 
-        stage ("Import python modules") {
+        /* stage ("Import python modules") {
             steps{
                 sh 'python3 -m pip install cfn-lint --user'
             }
-        } 
+        } */ 
 
         stage( "Lint and push template to S3" ) {
             steps {

@@ -3,11 +3,13 @@ Install-Module -Name AWS.Tools.S3 -Verbose -Force
 Import-Module -Name AWS.Tools.S3
 $branch = $args[ 0 ]
 
+Write-Host "###### INSTALLING REQUIRED MODULES #####"
+python3 -m pip install cfn-lint --user
 
-    Write-Host "######## CHECKING FOR ERRORS IN YAML FILES ########"
-    $listOfYamlFilesToLint = (Get-ChildItem -Filter "*.yaml").Name
+Write-Host "######## CHECKING FOR ERRORS IN YAML FILES ########"
+$listOfYamlFilesToLint = (Get-ChildItem -Filter "*.yaml").Name
 
-    $listOfYamlFilesToLint | ForEach-Object {
+$listOfYamlFilesToLint | ForEach-Object {
         $fileName = $_
         Write-Host "Checking file --> " $fileName
 
