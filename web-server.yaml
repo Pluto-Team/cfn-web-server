@@ -95,3 +95,7 @@ Resources:
             FromPort: 3389
             ToPort: 3389
             CidrIp: 96.255.23.246/32
+Outputs:
+ AppBranch:
+   Description: Information about the value
+   Value: !Ref DeployAppVersion
