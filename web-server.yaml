@@ -44,8 +44,8 @@ Resources:
         InstanceType: t2.micro 
         Monitoring: false
         IamInstanceProfile: EC2_S3FullAccess
-        SecurityGroupIds:
-            - !FindInMap [ DeployServerBasedOnAppVersion, !Ref DeployAppVersion , SecurityGroup ]
+        SecurityGroups:
+          - !FindInMap [ DeployServerBasedOnAppVersion, !Ref DeployAppVersion , SecurityGroup ]
         UserData: !Base64 |
           <powershell>
               Set-ExecutionPolicy Bypass -Scope Process -Force
