@@ -69,6 +69,8 @@ Resources:
 
                choco install -y puppet
 
+               Powershell "aws s3 ls"
+
           </powershell>
           <persist>true</persist>
         Tags:
