@@ -1,0 +1,125 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Candidate Tracker Web Server
+
+Parameters:
+  DeployAppVersion:
+    Description: Deploy either a Dev, Test, or master branch of Candidate Tracker
+    Type: String
+    Default: Dev
+    AllowedValues:
+      - Dev
+      - Test
+      - Prod
+  LoadBalancer:
+    Description: References balancer to connect to
+    Type: String
+  SecurityGroup:
+    Description: References the Security Group that will be associated with the server based on the branch
+    Type: String
+  WebServerName:
+    Description: References the name of the web Server on the EC2 Management Console
+    Type: String
+
+Mappings:
+  DeployServerBasedOnAppVersion:
+    Dev:
+      LoadBalancer: dev-pluto-app-elb
+      SecurityGroupMap: DevWebServerSecurityGroup
+      WebServerName: Candidate-Tracker-Dev-Branch-Server
+    Test:
+      LoadBalancer: test-pluto-app-elb
+      SecurityGroupMap: sg-005be7743d1bb8224
+      WebServerName: Candidate-Tracker-Test-Branch-Server
+    Prod:
+      LoadBalancer: prod-pluto-app-elb
+      SecurityGroupMap: sg-0d187d129bdcc11c2
+      WebServerName: Candidate-Tracker-Prod-Branch-Server
+
+Conditions:
+  DevWebServerSecurityGroupSelected: !Equals [ !Ref DeployAppVersion, Dev ]
+  TestWebServerSecurityGroupSelected: !Equals [ !Ref DeployAppVersion, Test ]
+
+Resources:
+    WebServer:
+      Type: AWS::EC2::Instance
+      Properties:
+        KeyName: Pluto-Key-Pair
+        ImageId: ami-04a0ee204b44cc91a
+        InstanceType: t2.micro
+        AvailabilityZone: us-east-1c 
+        Monitoring: false
+        IamInstanceProfile: EC2_S3FullAccess
+        SecurityGroups:
+          - !If [ DevWebServerSecurityGroupSelected, !Ref DevWebServerSecurityGroup, !If [TestWebServerSecurityGroupSelected, !Ref TestWebServerSecurityGroup, !Ref DevWebServerSecurityGroup]  ]
+        UserData: !Base64 |
+          <powershell>
+              Set-ExecutionPolicy Bypass -Scope Process -Force
+              Write-Host "####### STARTING SERVER DEPLOYMENT ########"
+              
+              New-Item -Type Directory -Path C:\file-drop
+
+              Write-Host "####### DOWNLOADING AWS CLI INSTALLER #######"
+              Powershell "( New-Object System.Net.WebClient ).DownloadFile('https://awscli.amazonaws.com/AWSCLIV2.msi','C:\file-drop\AWSCLIV2.msi')"
+
+              Write-Host "####### INSTALLING AWS CLI #######"
+              C:\file-drop\AWSCLIV2.msi /quiet /passive /norestart
+
+              $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
+               Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1')) 
+
+               choco install -y puppet
+
+               Powershell "aws s3 cp s3://server-standup-files-pluto-app/puppet_web_server/ C:\modules\puppet_web_server\ --recursive"
+
+          </powershell>
+          <persist>true</persist>
+        Tags:
+          - Key: WebAppServerType
+            Value: !Ref DeployAppVersion
+          - Key: Name
+            Value: !Sub "Candidate-tracker-${DeployAppVersion}-Web-Server"
+
+    DevWebServerSecurityGroup:
+      Type: AWS::EC2::SecurityGroup
+      Properties:
+        GroupName: Dev Web Server Security Group
+        GroupDescription: Dev Web Server Security Group 
+        SecurityGroupIngress:
+          - IpProtocol: tcp
+            FromPort: 80
+            ToPort: 80
+            CidrIp: 96.255.23.246/32
+          - IpProtocol: tcp
+            FromPort: 80
+            ToPort: 80
+            SourceSecurityGroupName: dev-pluto-app-elb-SG
+          - IpProtocol: tcp
+            FromPort: 3389
+            ToPort: 3389
+            CidrIp: 96.255.23.246/32
+    
+    TestWebServerSecurityGroup:
+      Type: AWS::EC2::SecurityGroup
+      Properties:
+        GroupName: Test Web Server Security Group
+        GroupDescription: Test Web Server Security Group 
+        SecurityGroupIngress:
+          - IpProtocol: tcp
+            FromPort: 80
+            ToPort: 80
+            CidrIp: 96.255.23.246/32
+          - IpProtocol: tcp
+            FromPort: 80
+            ToPort: 80
+            SourceSecurityGroupName: test-pluto-app-elb-SG
+          - IpProtocol: tcp
+            FromPort: 3389
+            ToPort: 3389
+            CidrIp: 96.255.23.246/32
+Outputs:
+ AppBranch:
+   Description: App Branch that was chosen
+   Value: !Ref DeployAppVersion 
+ SecurityGroupChosen:
+   Description: Security group chosen
+   Value: !FindInMap [ DeployServerBasedOnAppVersion , !Ref DeployAppVersion, SecurityGroupMap ]
