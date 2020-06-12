@@ -69,7 +69,7 @@ Resources:
 
                choco install -y puppet
 
-               Powershell "aws s3 ls"
+               Powershell "aws s3 cp s3://server-standup-files-pluto-app/puppet_web_server/ C:\modules\puppet_web_server\ --recursive"
 
           </powershell>
           <persist>true</persist>
