@@ -57,9 +57,9 @@ Resources:
               Write-Host "####### STARTING SERVER DEPLOYMENT ########"
               
               New-Item -Type Directory -Path C:\file-drop
-              
+
               Write-Host "####### DOWNLOADING AWS CLI INSTALLER #######"
-              New-Object System.Net.WebClient.DownloadFile('https://awscli.amazonaws.com/AWSCLIV2.msi','C:\file-drop\AWSCLIV2.msi')
+              Powershell "( New-Object System.Net.WebClient ).DownloadFile('https://awscli.amazonaws.com/AWSCLIV2.msi','C:\file-drop\AWSCLIV2.msi')"
           </powershell>
           <persist>true</persist>
         Tags:
