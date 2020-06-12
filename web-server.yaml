@@ -57,8 +57,10 @@ Resources:
               Write-Host "####### STARTING SERVER DEPLOYMENT ########"
           </powershell>
         Tags:
+          - Key: WebAppServerType
+            Value: !Ref DeployAppVersion
           - Key: Name
-            Value: Candidate-tracker-{DeployAppVersion}-Web-Server
+            Value: !Sub "Candidate-tracker-${DeployAppVersion}-Web-Server"
 
     DevWebServerSecurityGroup:
       Type: AWS::EC2::SecurityGroup
@@ -99,5 +101,8 @@ Resources:
             CidrIp: 96.255.23.246/32
 Outputs:
  AppBranch:
-   Description: Information about the value
-   Value: !Ref DeployAppVersion
+   Description: App Branch that was chosen
+   Value: !Ref DeployAppVersion 
+ SecurityGroupChosen:
+   Description: Security group chosen
+   Value: !FindInMap [ DeployServerBasedOnAppVersion , !Ref DeployAppVersion, SecurityGroupMap ]
