@@ -64,6 +64,7 @@ Resources:
               Write-Host "####### INSTALLING AWS CLI #######"
               C:\file-drop\AWSCLIV2.msi /quiet /passive /norestart
 
+              $env:PATH += ";C:\Program Files\Amazon\AWSCLIV2\"
               [System.Environment]::GetEnvironmentVariable('PATH','machine')
               aws s3 ls
           </powershell>
