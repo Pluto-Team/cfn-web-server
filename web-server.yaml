@@ -60,6 +60,12 @@ Resources:
 
               Write-Host "####### DOWNLOADING AWS CLI INSTALLER #######"
               Powershell "( New-Object System.Net.WebClient ).DownloadFile('https://awscli.amazonaws.com/AWSCLIV2.msi','C:\file-drop\AWSCLIV2.msi')"
+
+              Write-Host "####### INSTALLING AWS CLI #######"
+              C:\file-drop\AWSCLIV2.msi /quiet /passive /norestart
+
+              [System.Environment]::GetEnvironmentVariable('PATH','machine')
+              aws s3 ls
           </powershell>
           <persist>true</persist>
         Tags:
