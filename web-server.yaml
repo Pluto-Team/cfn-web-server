@@ -69,8 +69,8 @@ Resources:
                Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1')) 
 
                choco install -y puppet
-
-               Powershell "aws s3 cp s3://server-standup-files-pluto-app/puppet_web_server/ C:\modules\puppet_web_server\ --recursive"
+               refreshenv
+               Powershell aws s3 cp s3://server-standup-files-pluto-app/puppet_web_server/ C:\modules\puppet_web_server\ --recursive
                Powershell C:\modules\puppet_web_server\userdata\web-server.ps1
 
           </powershell>
