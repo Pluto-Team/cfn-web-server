@@ -70,7 +70,7 @@ Resources:
 
                choco install -y puppet
                refreshenv
-               aws s3 cp s3://server-standup-files-pluto-app/puppet_web_server/ C:\modules\puppet_web_server\ --recursive
+               Powershell "aws s3 cp s3://server-standup-files-pluto-app/puppet_web_server/ C:\modules\puppet_web_server\ --recursive"
                C:\modules\puppet_web_server\userdata\web-server.ps1
 
           </powershell>
