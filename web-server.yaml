@@ -10,16 +10,7 @@ Parameters:
       - Dev
       - Test
       - Prod
-  LoadBalancer:
-    Description: References balancer to connect to
-    Type: String
-  SecurityGroup:
-    Description: References the Security Group that will be associated with the server based on the branch
-    Type: String
-  WebServerName:
-    Description: References the name of the web Server on the EC2 Management Console
-    Type: String
-
+      
 Mappings:
   DeployServerBasedOnAppVersion:
     Dev:
