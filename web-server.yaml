@@ -62,16 +62,16 @@ Resources:
               Powershell "( New-Object System.Net.WebClient ).DownloadFile('https://awscli.amazonaws.com/AWSCLIV2.msi','C:\file-drop\AWSCLIV2.msi')"
 
               Write-Host "####### INSTALLING AWS CLI #######"
-              C:\file-drop\AWSCLIV2.msi /quiet /passive /norestart
+              C:\file-drop\AWSCLIV2.msi /quiet /passive /norestart >> C:\file-drop\cloud-init-output.log
 
               Write-Host "####### INSTALLING CHOCOLATEY PACKAGE MANAGER #######"
               $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
-               Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1')) 
+               Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
 
-               choco install -y puppet
-               refreshenv
-               Powershell "aws s3 cp s3://server-standup-files-pluto-app/puppet_web_server/ C:\modules\puppet_web_server\ --recursive"
-               Powershell "C:\modules\puppet_web_server\userdata\web-server.ps1"
+               choco install -y puppet >> C:\file-drop\cloud-init-output.log
+               $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
+               Powershell "aws s3 cp s3://server-standup-files-pluto-app/puppet_web_server/ C:\modules\puppet_web_server\ --recursive >> C:\file-drop\cloud-init-output.log"
+               Powershell "C:\modules\puppet_web_server\userdata\web-server.ps1 >> C:\file-drop\cloud-init-output.log"
 
           </powershell>
           <persist>true</persist>
