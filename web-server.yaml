@@ -36,7 +36,7 @@ Resources:
       Properties:
         KeyName: Pluto-Key-Pair
         ImageId: ami-04a0ee204b44cc91a
-        InstanceType: t2.micro
+        InstanceType: t2.small
         AvailabilityZone: us-east-1c 
         Monitoring: false
         IamInstanceProfile: EC2_S3FullAccess
