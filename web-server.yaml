@@ -75,7 +75,6 @@ Resources:
     DevWebServerSecurityGroup:
       Type: AWS::EC2::SecurityGroup
       Properties:
-        GroupName: Dev Web Server Security Group
         GroupDescription: Dev Web Server Security Group 
         SecurityGroupIngress:
           - IpProtocol: tcp
@@ -94,7 +93,6 @@ Resources:
     TestWebServerSecurityGroup:
       Type: AWS::EC2::SecurityGroup
       Properties:
-        GroupName: Test Web Server Security Group
         GroupDescription: Test Web Server Security Group 
         SecurityGroupIngress:
           - IpProtocol: tcp
