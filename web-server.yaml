@@ -74,7 +74,7 @@ Resources:
     WebServerSecurityGroup:
       Type: AWS::EC2::SecurityGroup
       Properties:
-        GroupDescription: Dev Web Server Security Group 
+        GroupDescription: Web Server Security Group 
         SecurityGroupIngress:
           - IpProtocol: tcp
             FromPort: 80
