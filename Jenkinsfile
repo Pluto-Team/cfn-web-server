@@ -8,7 +8,7 @@ pipeline {
     stages {
         stage ("Starting Build") {
             steps{
-                slackSend (color: '#FFFF00', message: "@channel STARTED Web Server CloudFormation lint checker: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+                office365ConnectorSend  message: "STARTED Web Server CloudFormation lint checker: ${env.JOB_NAME} ${env.BUILD_NUMBER} ${env.BUILD_URL}", status: "Success", webhookUrl: env.TEAMS_WEBOOK_URL
             }
         }
 
@@ -28,10 +28,11 @@ pipeline {
 
             post {
                 success {
-                        slackSend (color: '#00FF00', message: "No errors found in linting! '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+                        office365ConnectorSend  message: "No errors found in linting! ${env.JOB_NAME} ${env.BUILD_NUMBER} ${env.BUILD_URL}", status: "Success", webhookUrl: env.TEAMS_WEBOOK_URL
+                        
                 }
                 failure{
-                    slackSend (color: '#FF0000', message: "Errors found in linting! Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+                    office365ConnectorSend  message: "Errors found in linting! ${env.JOB_NAME} ${env.BUILD_NUMBER} ${env.BUILD_URL}", status: "Failed", webhookUrl: env.TEAMS_WEBOOK_URL
                 }
             }
         }
@@ -47,11 +48,11 @@ pipeline {
     // after completing all of the stage tasks above, it will send an email if there was failure or success
     post {
         success {
-            slackSend (color: '#00FF00', message: "@channel Job finished with a SUCCESSFUL status: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+            office365ConnectorSend  message: "Job finished with a SUCCESSFUL status: Job ${env.JOB_NAME} ${env.BUILD_NUMBER} ${env.BUILD_URL}", status: "Success", webhookUrl: env.TEAMS_WEBOOK_URL
         }
 
         failure {
-            slackSend (color: '#FF0000', message: "@channel Job finished with a FAILED status: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+            office365ConnectorSend  message: "Job finished with a FAILED status: Job ${env.JOB_NAME} ${env.BUILD_NUMBER} ${env.BUILD_URL}", status: "Failed", webhookUrl: env.TEAMS_WEBOOK_URL
 
             
         }

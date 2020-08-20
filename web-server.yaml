@@ -28,7 +28,6 @@ Mappings:
 
 Conditions:
   DevWebServerSecurityGroupSelected: !Equals [ !Ref DeployAppVersion, Dev ]
-  TestWebServerSecurityGroupSelected: !Equals [ !Ref DeployAppVersion, Test ]
 
 Resources:
     WebServer:
@@ -41,7 +40,7 @@ Resources:
         Monitoring: false
         IamInstanceProfile: EC2_S3FullAccess
         SecurityGroups:
-          - !If [ DevWebServerSecurityGroupSelected, !Ref DevWebServerSecurityGroup, !If [TestWebServerSecurityGroupSelected, !Ref TestWebServerSecurityGroup, !Ref DevWebServerSecurityGroup]  ]
+          - !Ref WebServerSecurityGroup
         UserData: !Base64 |
           <powershell>
               Set-ExecutionPolicy Bypass -Scope Process -Force
@@ -65,18 +64,16 @@ Resources:
                Powershell "C:\modules\puppet_web_server\userdata\web-server.ps1 >> C:\file-drop\cloud-init-output.log"
 
           </powershell>
-          <persist>true</persist>
         Tags:
           - Key: WebAppServerType
             Value: !Ref DeployAppVersion
           - Key: Name
             Value: !Sub "Candidate-tracker-${DeployAppVersion}-Web-Server"
 
-    DevWebServerSecurityGroup:
+    WebServerSecurityGroup:
       Type: AWS::EC2::SecurityGroup
       Properties:
-        GroupName: Dev Web Server Security Group
-        GroupDescription: Dev Web Server Security Group 
+        GroupDescription: Web Server Security Group 
         SecurityGroupIngress:
           - IpProtocol: tcp
             FromPort: 80
@@ -85,26 +82,7 @@ Resources:
           - IpProtocol: tcp
             FromPort: 80
             ToPort: 80
-            SourceSecurityGroupName: dev-pluto-app-elb-SG
-          - IpProtocol: tcp
-            FromPort: 3389
-            ToPort: 3389
-            CidrIp: 96.255.23.246/32
-    
-    TestWebServerSecurityGroup:
-      Type: AWS::EC2::SecurityGroup
-      Properties:
-        GroupName: Test Web Server Security Group
-        GroupDescription: Test Web Server Security Group 
-        SecurityGroupIngress:
-          - IpProtocol: tcp
-            FromPort: 80
-            ToPort: 80
-            CidrIp: 96.255.23.246/32
-          - IpProtocol: tcp
-            FromPort: 80
-            ToPort: 80
-            SourceSecurityGroupName: test-pluto-app-elb-SG
+            SourceSecurityGroupName: !If [ DevWebServerSecurityGroupSelected, dev-pluto-app-elb-SG , test-pluto-app-elb-SG ]
           - IpProtocol: tcp
             FromPort: 3389
             ToPort: 3389
