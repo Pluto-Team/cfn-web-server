@@ -64,7 +64,6 @@ Resources:
                Powershell "C:\modules\puppet_web_server\userdata\web-server.ps1 >> C:\file-drop\cloud-init-output.log"
 
           </powershell>
-          <persist>true</persist>
         Tags:
           - Key: WebAppServerType
             Value: !Ref DeployAppVersion
