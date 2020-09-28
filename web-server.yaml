@@ -34,7 +34,7 @@ Resources:
       Type: AWS::EC2::Instance
       Properties:
         KeyName: Pluto-Key-Pair
-        ImageId: ami-04a0ee204b44cc91a
+        ImageId: ami-0eb7fbcc77e5e6ec6
         InstanceType: t2.small
         AvailabilityZone: us-east-1c 
         Monitoring: false
